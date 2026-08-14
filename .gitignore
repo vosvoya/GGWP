@@ -1,0 +1,9 @@
+# REAPER-generated media and project files
+*.wav
+*.wav.reapeaks
+*.rpp
+*.rpp-bak
+
+# OS metadata
+.DS_Store
+Thumbs.db
