@@ -2,7 +2,7 @@
 
 GGWP is a REAPER ReaScript utility for visual group gain riding via a silent rendered proxy waveform.
 
-It renders the selected folder/group track, places the rendered item back on that group as a silent visual `PRINT`, and lets you ride a Take Volume Envelope while GGWP writes the combined result to the group Track Volume Envelope.
+It renders the selected folder/group track's post-fader main output to a mono stem, places the rendered item back on that group as a silent visual `PRINT`, and lets you ride a Take Volume Envelope while GGWP writes the combined result to the group Track Volume Envelope.
 
 ```text
 RESULT(t) = BASE(t) × TAKE(t)
@@ -20,7 +20,7 @@ Without js_ReaScriptAPI, GGWP automatically uses its native timing fallback.
 
 ## Installation
 
-1. Download [`GGWP_v1.0.1.lua`](GGWP_v1.0.1.lua), or download it from the latest GitHub release.
+1. Download [`GGWP_v1.0.2.lua`](GGWP_v1.0.2.lua), or download it from the latest GitHub release.
 2. In REAPER, open **Actions → Show action list**.
 3. Click **New action → Load ReaScript**.
 4. Select the downloaded Lua file.
@@ -36,7 +36,24 @@ Without js_ReaScriptAPI, GGWP automatically uses its native timing fallback.
 
 The generated `PRINT` is silenced with REAPER's stock **JS: Channel Mapper-Downmixer**, so it remains visible without doubling the group's audio.
 
-## v1.0.1 highlights
+## v1.0.2 changes
+
+- Replaced REAPER Action `42589` (multichannel parent-send post-fader render) with Action `40537` (mono post-fader stem render).
+- The generated `GGWP PRINT` is now always a single-channel mono proxy instead of inheriting the source group's multichannel width.
+- The source group keeps its original `I_NCHAN` value, preserving channels `3/4`, `5/6`, and higher for sidechains and internal routing.
+- GGWP verifies the rendered media with `GetMediaSourceNumChannels()` and safely rejects the `PRINT` unless it has exactly one channel.
+
+```text
+Multichannel GROUP processing and sidechains
+                    ↓
+                MAIN 1/2
+                    ↓
+             mono stem render
+                    ↓
+        GGWP PRINT = one channel
+```
+
+## Preserved behavior
 
 - Exact commit on left-mouse-button release when js_ReaScriptAPI is available
 - Dependency-free native fallback when it is not available
@@ -54,4 +71,4 @@ The generated `PRINT` is silenced with REAPER's stock **JS: Channel Mapper-Downm
 
 ## Version
 
-The first published working version is **v1.0.1**.
+Current version: **v1.0.2**. The first published working version was **v1.0.1**.
